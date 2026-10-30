@@ -214,9 +214,25 @@ if (finePointer.matches && !reducedMotion.matches) {
   document.querySelectorAll('.tilt').forEach(bindTilt);
 }
 
-/* ── Formulaire de contact (Formspree) ────────────────────── */
+/* ── Formulaire de contact ────────────────────────────────── */
+// Avec un identifiant Formspree (attribut data-formspree), le message part directement.
+// Sans identifiant, on ouvre la messagerie du visiteur avec un e-mail pré-rempli :
+// les messages ne peuvent arriver qu'à l'adresse indiquée dans l'attribut action.
 const form = document.querySelector('[data-contact-form]');
 const formStatus = form.querySelector('[data-form-status]');
+const formspreeId = form.dataset.formspree?.trim();
+
+function openMailDraft() {
+  const data = new FormData(form);
+  const subject = data.get('subject') || `Contact depuis le portfolio — ${data.get('name')}`;
+  const body = [
+    data.get('message'),
+    '',
+    `— ${data.get('name')}${data.get('company') ? `, ${data.get('company')}` : ''}`,
+    data.get('email'),
+  ].join('\n');
+  location.href = `${form.action}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
 
 function setStatus(state, message) {
   formStatus.dataset.state = state;
@@ -245,11 +261,17 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
+  if (!formspreeId) {
+    openMailDraft();
+    setStatus('ok', 'Votre messagerie s\'ouvre avec le message prêt à envoyer.');
+    return;
+  }
+
   form.setAttribute('aria-busy', 'true');
   setStatus('pending', 'Envoi en cours…');
 
   try {
-    const response = await fetch(form.action, {
+    const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
       method: 'POST',
       body: new FormData(form),
       headers: { Accept: 'application/json' },
