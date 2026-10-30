@@ -199,6 +199,21 @@
   .certs li::before { content: "✓ "; color: var(--c-tide); font-weight: 700; }
 }
 
+/* Le CV suit le thème choisi sur le portfolio (script inline du <head>) */
+@layer sheet {
+  :root[data-theme="light"] { color-scheme: light; }
+  :root[data-theme="light"] body {
+    background:
+      radial-gradient(50rem 30rem at 80% -10%, oklch(86% 0.07 250 / 0.7), transparent 70%),
+      oklch(95% 0.015 250);
+  }
+  :root[data-theme="light"] .toolbar__back { color: var(--c-ink); }
+  :root[data-theme="light"] .toolbar__back:hover { color: var(--c-tide); }
+  :root[data-theme="light"] :is(.mark, .toolbar__print) { background: var(--c-ink); color: var(--c-paper); }
+  :root[data-theme="light"] .toolbar__print:hover { background: var(--c-tide); }
+  :root[data-theme="light"] .sheet { box-shadow: 0 30px 80px -30px oklch(40% 0.08 260 / 0.45); }
+}
+
 @layer print {
   @page { size: A4; margin: 0; }
   @media print {

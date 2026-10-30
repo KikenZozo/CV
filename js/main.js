@@ -80,6 +80,58 @@ document.addEventListener('click', (event) => {
   }
 });
 
+/* ── Thème clair / sombre ─────────────────────────────────── */
+// Le thème initial est posé par le script inline du <head> (avant peinture, sans flash).
+const themeBtn = document.querySelector('[data-theme-toggle]');
+const themeLabel = document.querySelector('[data-theme-label]');
+const themeMeta = document.querySelector('meta[name="theme-color"]');
+const THEME_COLORS = { dark: '#050a1c', light: '#f4f7fc' };
+
+function applyTheme(theme) {
+  root.dataset.theme = theme;
+  themeLabel.textContent = theme === 'dark' ? 'Mode clair' : 'Mode sombre';
+  themeMeta?.setAttribute('content', THEME_COLORS[theme]);
+}
+
+applyTheme(root.dataset.theme === 'light' ? 'light' : 'dark');
+
+themeBtn.addEventListener('click', () => {
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+  // Le cercle de la View Transition part du centre du bouton
+  const box = themeBtn.getBoundingClientRect();
+  root.style.setProperty('--vt-x', `${box.left + box.width / 2}px`);
+  root.style.setProperty('--vt-y', `${box.top + box.height / 2}px`);
+  transition('theme', () => applyTheme(next));
+  try { localStorage.setItem('theme', next); } catch {}
+});
+
+// Sans choix mémorisé, on suit les changements de préférence système en direct
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', (event) => {
+  let saved = null;
+  try { saved = localStorage.getItem('theme'); } catch {}
+  if (!saved) applyTheme(event.matches ? 'light' : 'dark');
+});
+
+/* ── HUD éphémère ─────────────────────────────────────────── */
+// Petite capsule flottante qui annonce la section atteinte, puis s'efface.
+const hud = document.querySelector('[data-hud]');
+const hudNum = hud.querySelector('.hud__num');
+const hudLabel = hud.querySelector('.hud__label');
+let hudTimer = 0;
+let lastHud = '';
+
+function showHud(section) {
+  const num = section.querySelector('.sec-head__num')?.textContent;
+  const label = section.querySelector('.kicker')?.textContent.replace(/^\/\/\s*/, '');
+  if (!num || num === lastHud) return;
+  lastHud = num;
+  hudNum.textContent = num;
+  hudLabel.textContent = label;
+  hud.classList.add('is-visible');
+  clearTimeout(hudTimer);
+  hudTimer = setTimeout(() => hud.classList.remove('is-visible'), 2600);
+}
+
 /* ── Section active dans la navigation rapide ─────────────── */
 const navLinks = new Map(
   [...document.querySelectorAll('.quicknav a, .menu__list a')].map((a) => [a, a.getAttribute('href').slice(1)])
@@ -89,6 +141,7 @@ const spy = new IntersectionObserver(
   (entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
+      showHud(entry.target);
       for (const [link, id] of navLinks) {
         if (id === entry.target.id) link.setAttribute('aria-current', 'true');
         else link.removeAttribute('aria-current');

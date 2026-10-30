@@ -7,7 +7,7 @@
   <meta name="description" content="Portfolio d'Enzo Bouarab, Technicien Supérieur Systèmes et Réseaux (TSSR, titre pro niveau 5) formé chez MODE 83 à Draguignan. Windows Server, Linux, Active Directory, réseaux, virtualisation, sécurité. Disponible en région PACA.">
   <meta name="author" content="Enzo Bouarab">
   <meta name="robots" content="index, follow">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#050a1c">
 
   <meta property="og:type" content="website">
@@ -22,6 +22,15 @@
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
 
+  <!-- Thème appliqué avant la première peinture : aucun flash. Choix mémorisé, sinon préférence système. -->
+  <script>
+    (function () {
+      var t;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
   <link rel="preload" href="fonts/barlow-condensed-800i.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
@@ -63,10 +72,33 @@
     <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></symbol>
     <symbol id="i-send" viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/></symbol>
     <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
   </svg>
 
   <a class="skip-link" href="#contenu">Aller au contenu principal</a>
   <div class="scroll-meter" aria-hidden="true"></div>
+
+  <!-- Ambiance « sous la surface » : bulles et rais de lumière, purement décoratifs -->
+  <div class="ambient" aria-hidden="true">
+    <i style="--x:49.6%;--s:2.27rem;--d:17.6s;--t:-11.4s;--drift:-8vw"></i>
+    <i style="--x:22.4%;--s:0.91rem;--d:17.5s;--t:-29.3s;--drift:4vw"></i>
+    <i style="--x:35.9%;--s:1.68rem;--d:19.6s;--t:-23.6s;--drift:-9vw"></i>
+    <i style="--x:44.8%;--s:0.9rem;--d:30.1s;--t:-0.6s;--drift:5vw"></i>
+    <i style="--x:39.1%;--s:2.0rem;--d:25.9s;--t:-26.2s;--drift:6vw"></i>
+    <i style="--x:78.5%;--s:2.3rem;--d:31.3s;--t:-13.2s;--drift:-9vw"></i>
+    <i style="--x:70.9%;--s:1.82rem;--d:26.0s;--t:-27.7s;--drift:-3vw"></i>
+    <i style="--x:37.4%;--s:2.19rem;--d:27.8s;--t:-18.6s;--drift:-6vw"></i>
+    <i style="--x:58.8%;--s:2.38rem;--d:18.6s;--t:-6.3s;--drift:3vw"></i>
+    <i style="--x:32.2%;--s:0.88rem;--d:27.1s;--t:-17.3s;--drift:-4vw"></i>
+    <i style="--x:26.1%;--s:2.32rem;--d:20.9s;--t:-20.1s;--drift:6vw"></i>
+    <i style="--x:17.5%;--s:2.5rem;--d:27.4s;--t:-7.5s;--drift:7vw"></i>
+    <i style="--x:78.1%;--s:0.61rem;--d:23.8s;--t:-19.0s;--drift:-3vw"></i>
+    <i style="--x:85.6%;--s:0.78rem;--d:28.8s;--t:-4.9s;--drift:5vw"></i>
+  </div>
+
+  <!-- HUD éphémère : annonce visuelle de la section atteinte (l'info est déjà portée par aria-current) -->
+  <p class="hud" aria-hidden="true" data-hud><span class="hud__num"></span><span class="hud__label"></span></p>
 
   <!-- ═════════ BARRE SUPÉRIEURE ═════════ -->
   <header class="topbar">
@@ -86,6 +118,11 @@
     </nav>
 
     <div class="topbar__actions">
+      <button class="theme-btn" type="button" data-theme-toggle>
+        <svg class="ico theme-btn__sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="ico theme-btn__moon" aria-hidden="true"><use href="#i-moon"/></svg>
+        <span class="theme-btn__label" data-theme-label>Mode clair</span>
+      </button>
       <a class="chip-link" href="cv.html">
         <svg class="ico" aria-hidden="true"><use href="#i-file"/></svg>CV
       </a>
@@ -201,6 +238,7 @@
       </figure>
 
       <a class="hero__scroll" href="#profil">Défiler <span aria-hidden="true">↓</span></a>
+      <div class="hero__waves" aria-hidden="true"></div>
     </section>
 
     <!-- ═════════ 01 · PROFIL ═════════ -->
