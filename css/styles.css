@@ -1643,15 +1643,61 @@
     to   { clip-path: circle(150vmax at var(--vt-x, 50%) var(--vt-y, 0%)); }
   }
 
+  /* ── Mouvement réduit : pas « zéro animation », mais zéro déplacement ──
+     On retire tout ce qui glisse, tourne, flotte ou défile en continu (ce qui gêne les personnes
+     sensibles au mouvement) et on garde des fondus courts, qui guident le regard sans rien déplacer. */
   @media (prefers-reduced-motion: reduce) {
-    ::view-transition-group(*),
-    ::view-transition-old(*),
-    ::view-transition-new(*) { animation: none !important; }
+    ::view-transition-group(*) { animation: none !important; }
+    ::view-transition-old(*) { animation: 0.25s ease both vt-fade-out !important; clip-path: none !important; }
+    ::view-transition-new(*) { animation: 0.25s ease both vt-fade-in !important; clip-path: none !important; }
+
     .tilt { transform: none; }
     .marquee__track { mask-image: none; }
     .marquee__list { flex-wrap: wrap; flex: 1; }
     .marquee__list[aria-hidden="true"] { display: none; }
+    .hud { translate: none; filter: none; transition: opacity 0.4s ease; }
+
+    .hero__copy > *, .hero__console { animation: fade-in 0.7s ease both; }
+    .hero__copy > :nth-child(2) { animation-delay: 0.08s; }
+    .hero__copy > :nth-child(3) { animation-delay: 0.16s; }
+    .hero__copy > :nth-child(4) { animation-delay: 0.24s; }
+    .hero__copy > :nth-child(5) { animation-delay: 0.32s; }
+    .hero__copy > :nth-child(6) { animation-delay: 0.4s; }
+    .hero__console { animation-delay: 0.3s; }
+
+    .menu[open] .menu__list li { animation: fade-in 0.35s calc(var(--i) * 0.04s) ease both; }
+    .led { animation: pulse 2.2s ease-in-out infinite; }
+
+    html.js .sec-head:not(.is-in) > :not(.sec-head__num) { opacity: 0; }
+    .sec-head.is-in > :is(.kicker, .sec-head__title, .sec-head__desc) { animation: fade-in 0.6s ease both; }
+    .sec-head.is-in > .sec-head__title { animation-delay: 0.06s; }
+    .sec-head.is-in > .sec-head__desc  { animation-delay: 0.16s; }
+    .sec-head.is-in .sec-head__title span { animation: wipe 0.6s 0.1s ease both; }
+
+    @supports (animation-timeline: view()) {
+      .scroll-meter { animation: meter linear both; animation-timeline: scroll(root block); }
+      .topbar { animation: bar-settle linear both; animation-timeline: scroll(root block); animation-range: 0 12rem; }
+      .reveal {
+        animation: fade-in linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 22%;
+      }
+      .bar::after { animation: fill linear both; animation-timeline: view(); animation-range: entry 40% cover 45%; }
+      .timeline::after { animation: grow-y linear both; animation-timeline: --journey; animation-range: cover 15% cover 65%; }
+      .ink-reveal {
+        color: transparent;
+        background: linear-gradient(90deg, var(--c-paper) 0 50%, color-mix(in oklch, var(--c-paper) 16%, transparent) 50% 100%) 100% 0 / 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: ink linear both;
+        animation-timeline: view();
+        animation-range: cover 20% cover 55%;
+      }
+    }
   }
+  @keyframes fade-in     { from { opacity: 0; } }
+  @keyframes vt-fade-in  { from { opacity: 0; } }
+  @keyframes vt-fade-out { to { opacity: 0; } }
 }
 
 /* ─────────────────────────── UTILITIES / PRINT ─────────────────────────── */

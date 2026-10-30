@@ -344,6 +344,17 @@
   @keyframes band-x     { from { translate: 0 0; } to { translate: -22% 0; } }
   @keyframes band-x-rev { from { translate: -22% 0; } to { translate: 0 0; } }
 
+  /* Mouvement réduit : mêmes effets, sans déplacement (fondus uniquement) */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__name .ch { animation: fade-in 0.5s calc(0.1s + var(--l) * 0.04s) ease both; }
+    .hero__name .ch:hover { translate: none; }
+    .hero__copy, .hero__slab { transform: none; }
+    @supports (animation-timeline: view()) {
+      .radar__shape,
+      .radar__dots { animation: fade-in linear both; animation-timeline: view(); animation-range: entry 25% cover 45%; }
+    }
+  }
+
   @media print {
     .ocean, .grain, .boot, .band, .cursor, .radar { display: none !important; }
   }

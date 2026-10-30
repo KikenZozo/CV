@@ -12,10 +12,11 @@ root.classList.add('js');
 
 /**
  * Exécute `update` dans une View Transition nommée (data-vt sur <html> choisit la chorégraphie CSS).
- * Repli : mise à jour directe si l'API est absente ou si l'utilisateur limite les animations.
+ * En mouvement réduit, le CSS remplace rideaux et cercle par un simple fondu enchaîné.
+ * Repli : mise à jour directe si l'API est absente.
  */
 function transition(kind, update) {
-  if (!document.startViewTransition || reducedMotion.matches) {
+  if (!document.startViewTransition) {
     update();
     return Promise.resolve();
   }
