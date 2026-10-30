@@ -122,7 +122,8 @@ let lastHud = '';
 
 function showHud(section) {
   const num = section.querySelector('.sec-head__num')?.textContent;
-  const label = section.querySelector('.kicker')?.textContent.replace(/^\/\/\s*/, '');
+  const kicker = section.querySelector('.kicker');
+  const label = (kicker?.dataset.text ?? kicker?.textContent)?.replace(/^\/\/\s*/, '');
   if (!num || num === lastHud) return;
   lastHud = num;
   hudNum.textContent = num;
