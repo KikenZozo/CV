@@ -7,6 +7,9 @@ const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
 
+// Active les états « avant entrée » du CSS : sans JS, rien n'est jamais masqué
+root.classList.add('js');
+
 /**
  * Exécute `update` dans une View Transition nommée (data-vt sur <html> choisit la chorégraphie CSS).
  * Repli : mise à jour directe si l'API est absente ou si l'utilisateur limite les animations.
@@ -152,6 +155,19 @@ const spy = new IntersectionObserver(
   { rootMargin: '-45% 0px -50% 0px' }
 );
 document.querySelectorAll('main > section[id]').forEach((section) => spy.observe(section));
+
+/* ── Entrée des en-têtes de section ───────────────────────── */
+const headObserver = new IntersectionObserver(
+  (entries) => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-in');
+      headObserver.unobserve(entry.target);
+    }
+  },
+  { rootMargin: '0px 0px -8% 0px' }
+);
+document.querySelectorAll('.sec-head').forEach((head) => headObserver.observe(head));
 
 /* ── Horloge du menu ──────────────────────────────────────── */
 const dateFmt = new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' });

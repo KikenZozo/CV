@@ -1539,6 +1539,17 @@
 
     .marquee__list { animation: marquee 40s linear infinite; }
 
+    /* ── En-têtes de section : entrée jouée une fois, à durée fixe ──
+       Pas de lien direct avec la molette (qui avance par crans) : le mouvement reste fluide
+       quelle que soit la façon de défiler. JS ajoute .is-in à l'arrivée à l'écran. */
+    html.js .sec-head:not(.is-in) > :not(.sec-head__num) { opacity: 0; }
+    .sec-head.is-in > :is(.kicker, .sec-head__title, .sec-head__desc) {
+      animation: head-rise 0.85s var(--ease-out) both;
+    }
+    .sec-head.is-in > .sec-head__title { animation-delay: 0.06s; }
+    .sec-head.is-in > .sec-head__desc  { animation-delay: 0.2s; }
+    .sec-head.is-in .sec-head__title span { animation: wipe 0.75s 0.14s var(--ease-out) both; }
+
     /* ── Flottement « sous la surface » ──
        Chaque conteneur fait tourner --phase ; les enfants dérivent en sinusoïde, chacun avec son décalage.
        Résultat : une houle lente et désynchronisée, sans une seule ligne de JS. */
@@ -1603,11 +1614,6 @@
         animation-range: entry 0% cover 28%;
       }
 
-      .sec-head__title span {
-        animation: wipe linear both;
-        animation-timeline: view();
-        animation-range: entry 20% cover 35%;
-      }
       .sec-head__num {
         animation: num-drift linear both;
         animation-timeline: view();
@@ -1660,6 +1666,7 @@
   @keyframes slab-drift { to { --slab-top: 52%; --slab-bot: 30%; translate: 0 10%; } }
   @keyframes name-out   { to { translate: -6% 0; opacity: 0.15; } }
   @keyframes reveal     { from { opacity: 0; translate: 0 3rem; } }
+  @keyframes head-rise  { from { opacity: 0; translate: 0 1.75rem; } }
   @keyframes wipe       { from { clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); } }
   @keyframes num-drift  { from { translate: 0 30%; } to { translate: 0 -30%; } }
   @keyframes fill       { from { clip-path: inset(0 100% 0 0); } }
