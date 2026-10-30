@@ -65,7 +65,7 @@
     --glass-tint: var(--c-paper);
     --shadow-c:  black;
     --halo:      60%;
-    --bubble:    var(--c-neon);
+    --shaft:    var(--c-neon);
     color-scheme: dark;
   }
 
@@ -89,7 +89,7 @@
     --glass-tint: white;
     --shadow-c:  oklch(45% 0.08 260);
     --halo:      28%;
-    --bubble:    var(--c-tide);
+    --shaft:    var(--c-tide);
     color-scheme: light;
   }
 
@@ -1555,11 +1555,6 @@
     .menu__list li { transform: translateY(calc(sin(var(--phase) + var(--i) * 48deg) * 5px)); }
 
     .ambient::before { animation: shafts 18s ease-in-out infinite alternate; }
-    .ambient i {
-      animation:
-        bubble var(--d) linear var(--t) infinite,
-        sway calc(var(--d) / 5) ease-in-out var(--t) infinite alternate;
-    }
     .hero__waves::before { animation: tide-flow 22s linear infinite; }
     .hero__waves::after  { animation: tide-flow 14s linear infinite reverse; }
     .hud { animation: hud-bob 5s ease-in-out infinite; }
@@ -1651,13 +1646,6 @@
   @keyframes spin    { to { --angle: 360deg; } }
   @keyframes phase   { to { --phase: 360deg; } }
   @keyframes shafts  { from { rotate: -3deg; translate: -2% 0; } to { rotate: 3deg; translate: 2% 0; } }
-  @keyframes bubble  {
-    0%   { translate: 0 0; opacity: 0; }
-    12%  { opacity: 0.9; }
-    80%  { opacity: 0.65; }
-    100% { translate: var(--drift) -115vh; opacity: 0; }
-  }
-  @keyframes sway      { from { transform: translateX(-0.9rem); } to { transform: translateX(0.9rem); } }
   @keyframes tide-flow { to { translate: -1200px 0; } }
   @keyframes hud-bob   { 50% { transform: translateY(-5px); } }
   @keyframes packet  { to { stroke-dashoffset: 0; } }
@@ -1738,7 +1726,6 @@
     .marquee__track { mask-image: none; }
     .marquee__list { flex-wrap: wrap; flex: 1; }
     .marquee__list[aria-hidden="true"] { display: none; }
-    .ambient i { display: none; }
   }
 }
 
@@ -1755,7 +1742,7 @@
 /* ─────────────────────────── AMBIANCE & THÈME ─────────────────────────── */
 @layer components {
 
-  /* ── Ambiance aquatique : rais de lumière + bulles ── */
+  /* ── Ambiance aquatique : rais de lumière ── */
   .ambient {
     position: fixed;
     inset: 0;
@@ -1771,29 +1758,13 @@
     background: repeating-linear-gradient(
       100deg,
       transparent 0 6%,
-      color-mix(in oklch, var(--bubble) 7%, transparent) 7% 9%,
+      color-mix(in oklch, var(--shaft) 7%, transparent) 7% 9%,
       transparent 10% 15%,
       color-mix(in oklch, var(--glass-tint) 4%, transparent) 16% 17%,
       transparent 18% 24%
     );
     mask-image: linear-gradient(to bottom, #000, transparent 75%);
     filter: blur(10px);
-  }
-  .ambient i {
-    position: absolute;
-    inset-block-end: -3rem;
-    inset-inline-start: var(--x);
-    inline-size: var(--s);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    border: 1px solid color-mix(in oklch, var(--bubble) 55%, transparent);
-    background: radial-gradient(circle at 32% 30%,
-      color-mix(in oklch, var(--glass-tint) 80%, transparent) 0 12%,
-      color-mix(in oklch, var(--bubble) 22%, transparent) 40%,
-      color-mix(in oklch, var(--bubble) 6%, transparent) 68%);
-    box-shadow: 0 0 18px color-mix(in oklch, var(--bubble) 30%, transparent),
-                inset 0 0 8px color-mix(in oklch, var(--bubble) 25%, transparent);
-    opacity: 0;
   }
 
   /* ── Surface de l'eau sous le hero ── */

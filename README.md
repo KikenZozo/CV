@@ -24,7 +24,7 @@ docs/               Prompts Claude Design pour les assets optionnels
   et cross-document (`@view-transition { navigation: auto }` entre le portfolio et le CV).
 - **Esthétique** : palette OKLCH dérivée par `color-mix()`, typographie fluide `clamp()` + unités `cqi`,
   glassmorphism `backdrop-filter`, inclinaison 3D `perspective` pilotée par `@property`, `:has()`, `:user-invalid`.
-- **Ambiance « sous la surface »** : bulles et rais de lumière (couche fixe décorative), surface d'eau animée sous le
+- **Ambiance « sous la surface »** : rais de lumière ondulants (couche fixe décorative), surface d'eau animée sous le
   hero, cartes qui flottent en houle désynchronisée (un seul angle `@property --phase` par conteneur, décalé par
   `sin()` pour chaque enfant), HUD éphémère qui annonce la section atteinte puis s'efface.
 - **Thème clair / sombre** : choix mémorisé, sinon préférence système ; appliqué avant la première peinture (aucun
