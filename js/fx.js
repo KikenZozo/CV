@@ -31,16 +31,14 @@ if (bootEl && root.classList.contains('is-booting')) {
   bootEl?.remove();
 }
 
-/* ── Titres décodés ────────────────────────────────────────── */
-// Le premier mot (bloc blanc) et le kicker défilent en glyphes aléatoires avant de se fixer.
-// Largeur verrouillée pendant l'effet : aucun reflow, aucun décalage de mise en page.
+/* ── Kickers décodés ──────────────────────────────────────── */
+// Le petit libellé monospace au-dessus de chaque titre défile en glyphes aléatoires avant de se fixer,
+// pendant que le titre fait son entrée (CSS). En monospace, la largeur ne bouge pas : aucun reflow.
+// Le grand mot du bloc blanc n'est jamais brouillé : il doit rester net pendant son volet.
 const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#/<>_=+';
 
-function scramble(el, duration = 750) {
-  const final = el.textContent;
-  const box = el.getBoundingClientRect();
-  el.style.inlineSize = `${box.width}px`;
-  el.style.overflow = 'hidden';
+function scramble(el, duration = 650) {
+  const final = el.dataset.text ?? el.textContent;
   const start = performance.now();
 
   function step(now) {
@@ -53,36 +51,27 @@ function scramble(el, duration = 750) {
     }
     el.textContent = out;
     if (progress < 1) requestAnimationFrame(step);
-    else {
-      el.textContent = final;
-      el.style.inlineSize = '';
-      el.style.overflow = '';
-    }
+    else el.textContent = final;
   }
   requestAnimationFrame(step);
 }
 
 if (!reducedMotion) {
-  const heads = document.querySelectorAll('.sec-head');
-  heads.forEach((head) => {
-    const title = head.querySelector('.sec-head__title');
-    const kicker = head.querySelector('.kicker');
-    // Texte d'origine conservé : le HUD le lit pendant que l'effet tourne
-    if (kicker) kicker.dataset.text = kicker.textContent;
-    // Le titre complet reste lisible par les lecteurs d'écran pendant l'effet
-    title.setAttribute('aria-label', title.textContent.replace(/\s+/g, ' ').trim());
+  const kickers = document.querySelectorAll('.sec-head .kicker');
+  // Texte d'origine conservé : le HUD et les lecteurs d'écran le lisent pendant l'effet
+  kickers.forEach((kicker) => {
+    kicker.dataset.text = kicker.textContent;
+    kicker.setAttribute('aria-label', kicker.textContent);
   });
+  // Même seuil que l'entrée des en-têtes (main.js) : les deux effets démarrent ensemble
   const io = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
       io.unobserve(entry.target);
-      const word = entry.target.querySelector('.sec-head__title span');
-      const kicker = entry.target.querySelector('.kicker');
-      if (word) scramble(word, 800);
-      if (kicker) scramble(kicker, 600);
+      scramble(entry.target.querySelector('.kicker'));
     }
-  }, { rootMargin: '0px 0px -25% 0px' });
-  heads.forEach((h) => io.observe(h));
+  }, { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.sec-head').forEach((h) => io.observe(h));
 }
 
 /* ── Compteurs du hero ─────────────────────────────────────── */
