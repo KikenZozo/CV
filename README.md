@@ -46,11 +46,25 @@ Le contenu reprend le CV d'Enzo (stage XEFI, expériences, formation, langues). 
 | Profil, expériences, formation, langues, contact | `index.html` (sections `#profil` à `#contact`) et `cv.html` |
 | Niveaux de compétences (barres « LV » et radar) | `index.html`, section `#competences` : attribut `--lvl` et `aria-valuenow` de chaque barre ; valeurs du radar dans le `<polygon class="radar__shape">` |
 | Photo du CV imprimable | `images/portrait.webp` (360 × 360) |
-| Identifiant Formspree | attribut `action` du formulaire dans `index.html` |
+| Formulaire de contact | `index.html` : attribut `data-formspree` du formulaire (voir ci-dessous) |
 
-## Mise en ligne (GitHub Pages)
+## Mise en ligne (GitHub Pages, gratuit)
 
-Settings → Pages → *Deploy from a branch* → branche principale, dossier `/ (root)`.
+Adresse du site : **https://kikenzozo.github.io/CV/**
+
+1. Dépôt public (Settings → General → *Danger Zone* → visibilité).
+2. Settings → Pages → *Build and deployment* → **Deploy from a branch** → branche `main`, dossier `/ (root)` → *Save*.
+3. Le lien apparaît en haut de la page Pages après une à deux minutes. Chaque push sur `main` met le site à jour.
+
+`.nojekyll` désactive le traitement Jekyll (inutile ici) ; `robots.txt` et `sitemap.xml` aident Google à indexer
+les deux pages. Les balises `canonical` et Open Graph pointent vers l'adresse ci-dessus : à modifier si le site change d'adresse.
+
+### Formulaire de contact
+
+Sans configuration, « Envoyer » ouvre la messagerie du visiteur avec un e-mail pré-rempli adressé à Enzo.
+Pour recevoir les messages sans passer par la messagerie du visiteur : créer un compte gratuit sur
+[formspree.io](https://formspree.io), créer un formulaire, puis copier son identifiant (la partie après `/f/`)
+dans l'attribut `data-formspree=""` du formulaire d'`index.html`.
 
 ## Couche eye candy (branche `claude/eye-candy`)
 
