@@ -1,5 +1,8 @@
 # Enzo Bouarab — Portfolio TSSR
 
+> **Branche `claude/eye-candy`** — version expérimentale « captivante » superposée au site de base
+> (`css/fx.css`, `js/fx.js`, `js/ocean.js`). Voir la section *Couche eye candy* plus bas.
+
 Portfolio de Technicien Supérieur Systèmes & Réseaux. HTML et CSS natifs, aucun framework, aucune dépendance.
 
 ## Structure
@@ -46,3 +49,21 @@ Lighthouse (local, gzip, thèmes clair et sombre) : 100 / 100 / 100 / 100 en des
 ## Mise en ligne (GitHub Pages)
 
 Settings → Pages → *Deploy from a branch* → branche principale, dossier `/ (root)`.
+
+## Couche eye candy (branche `claude/eye-candy`)
+
+Tout est additionnel : retirer les deux balises `fx` du `<head>` d'`index.html` rend le site de base.
+
+- **Océan « Dark Hour » (WebGL)** — `js/ocean.js` : lune géante et reflets scintillants ; en défilant, la caméra
+  plonge sous la surface (caustiques, rais de lumière) ; ondes au pointeur ; aube en mode clair.
+  Rendu à demi-résolution, pause onglet masqué, résolution adaptative puis image figée si la machine peine.
+  Refuse le rendu logiciel (pas de GPU) et retombe alors sur le décor CSS. `?ocean=force` lève ces garde-fous pour tester.
+- **Séquence de démarrage** — journal système, nom, volet diagonal ; une fois par session, passable (clic / touche),
+  jamais jouée si « réduire les animations » est actif.
+- **Typographie cinétique** — lettres du nom en rotation 3D, glitch chromatique périodique, titres et kickers décodés
+  (largeur verrouillée : zéro décalage de mise en page).
+- **Rail horizontal épinglé** pour les projets, piloté par le défilement en CSS pur (`view-timeline` + `position: sticky`).
+- **Radar de compétences** (pentagone SVG), **bandeaux typographiques** liés au défilement, **curseur** et **boutons
+  magnétiques** (pointeur fin uniquement), **grain** de pellicule.
+
+Lighthouse (local, gzip, sans GPU donc océan désactivé) : 99 / 100 / 100 / 100 en desktop, 97 / 100 / 100 / 100 en mobile.

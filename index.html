@@ -29,12 +29,20 @@
       try { t = localStorage.getItem('theme'); } catch (e) {}
       if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
       document.documentElement.dataset.theme = t;
+      try {
+        if (!sessionStorage.getItem('booted') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('is-booting');
+          sessionStorage.setItem('booted', '1');
+        }
+      } catch (e) {}
     })();
   </script>
   <link rel="preload" href="fonts/barlow-condensed-800i.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/barlow-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/fx.css">
   <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/fx.js"></script>
 
   <script type="application/ld+json">
   {
@@ -75,6 +83,27 @@
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
   </svg>
+
+  <!-- Séquence de démarrage : jouée une fois par session (classe .boot posée dans le <head>), purement visuelle -->
+  <div class="boot" aria-hidden="true" data-boot>
+    <div class="boot__inner">
+      <ol class="boot__log">
+        <li>EB-BIOS 26.10 · POST <b>OK</b></li>
+        <li>Montage de /dev/enzo <b>OK</b></li>
+        <li>VLAN 10 · 20 · 99 en ligne <b>OK</b></li>
+        <li>Synchronisation GPO 24/24 <b>OK</b></li>
+        <li>Pare-feu · règles appliquées <b>OK</b></li>
+      </ol>
+      <p class="boot__name"><span>Enzo</span> <span>Bouarab</span></p>
+      <p class="boot__role">Technicien Supérieur Systèmes &amp; Réseaux</p>
+      <div class="boot__bar"><i></i></div>
+      <p class="boot__skip">Cliquez ou appuyez sur une touche pour passer</p>
+    </div>
+  </div>
+
+  <!-- Océan « Dark Hour » rendu en WebGL (js/ocean.js) ; le décor CSS reste en dessous en repli -->
+  <canvas class="ocean" aria-hidden="true" data-ocean></canvas>
+  <div class="grain" aria-hidden="true"></div>
 
   <a class="skip-link" href="#contenu">Aller au contenu principal</a>
   <div class="scroll-meter" aria-hidden="true"></div>
@@ -161,8 +190,9 @@
         <p class="status-pill"><span class="led" aria-hidden="true"></span>En ligne · Disponible immédiatement</p>
 
         <h1 class="hero__name" id="hero-title">
-          <span class="hero__first">Enzo</span>
-          <span class="hero__last">Bouarab</span>
+          <span class="sr-only">Enzo Bouarab</span>
+          <span class="hero__first" aria-hidden="true"><span class="ch" style="--l:0">E</span><span class="ch" style="--l:1">n</span><span class="ch" style="--l:2">z</span><span class="ch" style="--l:3">o</span></span>
+          <span class="hero__last" aria-hidden="true"><span class="ch" style="--l:4">B</span><span class="ch" style="--l:5">o</span><span class="ch" style="--l:6">u</span><span class="ch" style="--l:7">a</span><span class="ch" style="--l:8">r</span><span class="ch" style="--l:9">a</span><span class="ch" style="--l:10">b</span></span>
         </h1>
 
         <p class="hero__role"><span>Technicien Supérieur Systèmes &amp; Réseaux</span></p>
@@ -179,8 +209,8 @@
         </div>
 
         <dl class="hero__stats">
-          <div><dt>Compétences</dt><dd>15<sup>+</sup></dd></div>
-          <div><dt>Outils .exe</dt><dd>06</dd></div>
+          <div><dt>Compétences</dt><dd><span data-count="15">15</span><sup>+</sup></dd></div>
+          <div><dt>Outils .exe</dt><dd><span data-count="6" data-pad="2">06</span></dd></div>
           <div><dt>Titre pro</dt><dd>N5</dd></div>
         </dl>
       </div>
@@ -226,6 +256,11 @@
       <a class="hero__scroll" href="#profil">Défiler <span aria-hidden="true">↓</span></a>
       <div class="hero__waves" aria-hidden="true"></div>
     </section>
+
+    <div class="band" aria-hidden="true">
+      <p class="band__row">SYSTÈMES ✦ RÉSEAUX ✦ SÉCURITÉ ✦ VIRTUALISATION ✦ SUPERVISION ✦ SYSTÈMES ✦ RÉSEAUX ✦ SÉCURITÉ ✦ VIRTUALISATION ✦ SUPERVISION ✦ SYSTÈMES ✦ RÉSEAUX ✦ SÉCURITÉ ✦ VIRTUALISATION ✦ SUPERVISION ✦ </p>
+      <p class="band__row band__row--rev">ACTIVE DIRECTORY ✦ VMWARE ✦ POWERSHELL ✦ DEBIAN ✦ CISCO ✦ ACTIVE DIRECTORY ✦ VMWARE ✦ POWERSHELL ✦ DEBIAN ✦ CISCO ✦ ACTIVE DIRECTORY ✦ VMWARE ✦ POWERSHELL ✦ DEBIAN ✦ CISCO ✦ </p>
+    </div>
 
     <!-- ═════════ 01 · PROFIL ═════════ -->
     <section class="section" id="profil" aria-labelledby="profil-title">
@@ -293,6 +328,17 @@
         <h2 class="sec-head__title" id="competences-title"><span>Stack</span> technique</h2>
         <p class="sec-head__desc">Niveaux auto-évalués, développés en formation TSSR chez MODE 83 (sur 10).</p>
       </header>
+
+      <figure class="radar glass" aria-labelledby="radar-cap">
+        <svg viewBox="-70 -10 440 330" role="img" aria-labelledby="radar-title">
+          <title id="radar-title">Profil de compétences sur 10 : Systèmes 7,3 ; Réseaux 7,0 ; Virtualisation 6,8 ; Sécurité 6,8 ; Support 8,0</title>
+          <g class="radar__grid"><polygon points="150.0,128.0 170.9,143.2 162.9,167.8 137.1,167.8 129.1,143.2"/><polygon points="150.0,106.0 191.8,136.4 175.9,185.6 124.1,185.6 108.2,136.4"/><polygon points="150.0,84.0 212.8,129.6 188.8,203.4 111.2,203.4 87.2,129.6"/><polygon points="150.0,62.0 233.7,122.8 201.7,221.2 98.3,221.2 66.3,122.8"/><polygon points="150.0,40.0 254.6,116.0 214.7,239.0 85.3,239.0 45.4,116.0"/><line x1="150" y1="150" x2="150.0" y2="40.0"/><line x1="150" y1="150" x2="254.6" y2="116.0"/><line x1="150" y1="150" x2="214.7" y2="239.0"/><line x1="150" y1="150" x2="85.3" y2="239.0"/><line x1="150" y1="150" x2="45.4" y2="116.0"/></g>
+          <polygon class="radar__shape" points="150.0,69.7 223.2,126.2 194.0,210.5 106.0,210.5 66.3,122.8"/>
+          <g class="radar__dots"><circle cx="150.0" cy="69.7" r="4"/><circle cx="223.2" cy="126.2" r="4"/><circle cx="194.0" cy="210.5" r="4"/><circle cx="106.0" cy="210.5" r="4"/><circle cx="66.3" cy="122.8" r="4"/></g>
+          <g class="radar__labels"><text x="150.0" y="14.0" text-anchor="middle">Systèmes <tspan>7,3</tspan></text><text x="279.3" y="108.0" text-anchor="start">Réseaux <tspan>7,0</tspan></text><text x="229.9" y="260.0" text-anchor="start">Virtualisation <tspan>6,8</tspan></text><text x="70.1" y="260.0" text-anchor="end">Sécurité <tspan>6,8</tspan></text><text x="20.7" y="108.0" text-anchor="end">Support <tspan>8,0</tspan></text></g>
+        </svg>
+        <figcaption id="radar-cap">Moyenne par domaine · auto-évaluation</figcaption>
+      </figure>
 
       <div class="stats">
         <article class="stat-panel glass reveal" aria-labelledby="st-sys">
@@ -471,6 +517,9 @@
       </div>
       <p class="sr-only" role="status" data-filter-status></p>
 
+      <div class="rail">
+        <div class="rail__sticky">
+          <p class="rail__hint" aria-hidden="true">Défilez <span>→</span> <b data-rail-count>06</b> outils</p>
       <ul class="projects" role="list">
         <li class="project glass tilt" data-cat="sys" style="--vt:p1">
           <img src="images/exe-1.webp" width="900" height="540" alt="Capture de Maintenance-TSSR.exe : vérification disque, nettoyage et état des services" loading="lazy" decoding="async">
@@ -551,7 +600,15 @@
           </div>
         </li>
       </ul>
+          <div class="rail__meter" aria-hidden="true"><i></i></div>
+        </div>
+      </div>
     </section>
+
+    <div class="band" aria-hidden="true">
+      <p class="band__row">DISPONIBLE ✦ MOTIVÉ ✦ RIGOUREUX ✦ CURIEUX ✦ DISPONIBLE ✦ MOTIVÉ ✦ RIGOUREUX ✦ CURIEUX ✦ DISPONIBLE ✦ MOTIVÉ ✦ RIGOUREUX ✦ CURIEUX ✦ </p>
+      <p class="band__row band__row--rev">PREMIER POSTE ✦ RÉGION PACA ✦ CDI · CDD · ALTERNANCE ✦ PREMIER POSTE ✦ RÉGION PACA ✦ CDI · CDD · ALTERNANCE ✦ PREMIER POSTE ✦ RÉGION PACA ✦ CDI · CDD · ALTERNANCE ✦ </p>
+    </div>
 
     <!-- ═════════ 06 · OBJECTIF ═════════ -->
     <section class="section" id="objectif" aria-labelledby="objectif-title">
