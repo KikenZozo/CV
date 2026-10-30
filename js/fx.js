@@ -75,8 +75,9 @@ if (!reducedMotion) {
 }
 
 /* ── Compteurs du hero ─────────────────────────────────────── */
+// Un nombre qui défile n'est pas un mouvement : conservé même en mouvement réduit
 const counters = document.querySelectorAll('[data-count]');
-if (!reducedMotion) {
+{
   const delay = root.classList.contains('is-booting') ? 1900 : 500;
   setTimeout(() => {
     counters.forEach((el) => {
@@ -95,7 +96,7 @@ if (!reducedMotion) {
 }
 
 /* ── Curseur, boutons magnétiques et parallaxe : pointeur fin uniquement ── */
-if (finePointer && !reducedMotion) {
+if (finePointer) {
   const cursor = document.createElement('div');
   cursor.className = 'cursor';
   cursor.setAttribute('aria-hidden', 'true');
@@ -125,29 +126,34 @@ if (finePointer && !reducedMotion) {
   });
 
   (function loop() {
-    rx += (x - rx) * 0.18;
-    ry += (y - ry) * 0.18;
+    // En mouvement réduit, l'anneau suit le pointeur sans traîne
+    const k = reducedMotion ? 1 : 0.18;
+    rx += (x - rx) * k;
+    ry += (y - ry) * k;
     dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
     ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
     requestAnimationFrame(loop);
   })();
 
-  // Boutons magnétiques : ils se laissent attirer de quelques pixels vers le pointeur
-  document.querySelectorAll('.btn, .menu-btn, .theme-btn, .chip-link, .brand__mark').forEach((el) => {
-    el.addEventListener('pointermove', (e) => {
-      const b = el.getBoundingClientRect();
-      const dx = (e.clientX - (b.left + b.width / 2)) * 0.25;
-      const dy = (e.clientY - (b.top + b.height / 2)) * 0.35;
-      el.style.translate = `${dx}px ${dy}px`;
+  // Déplacements au pointeur : seulement sans « réduire les animations »
+  if (!reducedMotion) {
+    // Boutons magnétiques : ils se laissent attirer de quelques pixels vers le pointeur
+    document.querySelectorAll('.btn, .menu-btn, .theme-btn, .chip-link, .brand__mark').forEach((el) => {
+      el.addEventListener('pointermove', (e) => {
+        const b = el.getBoundingClientRect();
+        const dx = (e.clientX - (b.left + b.width / 2)) * 0.25;
+        const dy = (e.clientY - (b.top + b.height / 2)) * 0.35;
+        el.style.translate = `${dx}px ${dy}px`;
+      });
+      el.addEventListener('pointerleave', () => { el.style.translate = ''; });
     });
-    el.addEventListener('pointerleave', () => { el.style.translate = ''; });
-  });
 
-  // Parallaxe du hero : le nom et la découpe bleue glissent en sens opposés
-  const hero = document.querySelector('.hero');
-  hero.addEventListener('pointermove', (e) => {
-    const b = hero.getBoundingClientRect();
-    hero.style.setProperty('--px', ((e.clientX - b.left) / b.width - 0.5).toFixed(3));
-    hero.style.setProperty('--py', ((e.clientY - b.top) / b.height - 0.5).toFixed(3));
-  });
+    // Parallaxe du hero : le nom et la découpe bleue glissent en sens opposés
+    const hero = document.querySelector('.hero');
+    hero.addEventListener('pointermove', (e) => {
+      const b = hero.getBoundingClientRect();
+      hero.style.setProperty('--px', ((e.clientX - b.left) / b.width - 0.5).toFixed(3));
+      hero.style.setProperty('--py', ((e.clientY - b.top) / b.height - 0.5).toFixed(3));
+    });
+  }
 }
