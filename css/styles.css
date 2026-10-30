@@ -1327,7 +1327,7 @@
   .filter span { font-family: var(--f-mono); font-style: normal; font-size: var(--fs-xs); color: var(--c-neon); }
   .filter:hover { border-color: var(--c-neon); }
   .filter[aria-pressed="true"] { background: var(--c-paper); color: var(--c-ink); border-color: var(--c-paper); }
-  .filter[aria-pressed="true"] span { color: var(--c-tide); }
+  .filter[aria-pressed="true"] span { color: color-mix(in oklch, var(--c-ink) 78%, var(--c-neon)); }
 
   .projects {
     display: grid;
