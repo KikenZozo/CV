@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#050a1c"/>
+  <path d="M15 10h42l-8 44H7z" fill="#f7f9ff"/>
+  <path d="M45 10h12l-2 11z" fill="#4fe3f5"/>
+  <text x="31" y="43" text-anchor="middle" font-family="Arial Narrow, Arial, sans-serif" font-style="italic" font-weight="900" font-size="27" fill="#050a1c">EB</text>
+</svg>
