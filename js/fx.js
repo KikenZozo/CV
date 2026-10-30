@@ -1,5 +1,5 @@
 // Couche « eye candy » : séquence de démarrage, curseur, boutons magnétiques, titres décodés,
-// compteurs, parallaxe du hero et rail de projets. Tout est décoratif : le site reste complet sans ce module.
+// compteurs et parallaxe du hero. Tout est décoratif : le site reste complet sans ce module.
 
 const root = document.documentElement;
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -94,19 +94,6 @@ if (!reducedMotion) {
   }, delay);
 }
 
-/* ── Rail de projets : hauteur proportionnelle au nombre de cartes visibles ── */
-const rail = document.querySelector('.rail');
-const railCount = document.querySelector('[data-rail-count]');
-if (rail) {
-  const update = () => {
-    const n = rail.querySelectorAll('.project:not([hidden])').length;
-    rail.style.setProperty('--n', n);
-    if (railCount) railCount.textContent = String(n).padStart(2, '0');
-  };
-  new MutationObserver(update).observe(rail, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
-  update();
-}
-
 /* ── Curseur, boutons magnétiques et parallaxe : pointeur fin uniquement ── */
 if (finePointer && !reducedMotion) {
   const cursor = document.createElement('div');
@@ -130,11 +117,11 @@ if (finePointer && !reducedMotion) {
   addEventListener('pointerdown', () => cursor.classList.add('is-down'));
   addEventListener('pointerup', () => cursor.classList.remove('is-down'));
 
-  const interactive = 'a, button, [role="button"], label, .project';
+  const interactive = 'a, button, [role="button"], label';
   document.addEventListener('pointerover', (e) => {
     const target = e.target.closest(interactive);
     cursor.classList.toggle('is-hover', Boolean(target));
-    label.textContent = target?.classList.contains('project') && !e.target.closest('a') ? 'Voir' : '';
+    label.textContent = '';
   });
 
   (function loop() {
@@ -146,7 +133,7 @@ if (finePointer && !reducedMotion) {
   })();
 
   // Boutons magnétiques : ils se laissent attirer de quelques pixels vers le pointeur
-  document.querySelectorAll('.btn, .menu-btn, .theme-btn, .chip-link, .filter, .brand__mark').forEach((el) => {
+  document.querySelectorAll('.btn, .menu-btn, .theme-btn, .chip-link, .brand__mark').forEach((el) => {
     el.addEventListener('pointermove', (e) => {
       const b = el.getBoundingClientRect();
       const dx = (e.clientX - (b.left + b.width / 2)) * 0.25;

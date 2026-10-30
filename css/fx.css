@@ -224,9 +224,6 @@
     -webkit-text-stroke: 1.5px var(--c-neon);
   }
 
-  /* ── Rail de projets (repli : grille normale) ────────────── */
-  .rail__hint, .rail__meter { display: none; }
-
   /* ── Curseur ─────────────────────────────────────────────── */
   html.has-cursor,
   html.has-cursor * { cursor: none !important; }
@@ -282,7 +279,7 @@
     transition: translate 0.8s var(--ease-out);
   }
   .btn:hover::after { translate: 120% 0; }
-  .btn, .menu-btn, .theme-btn, .chip-link, .filter, .brand__mark { transition-property: background-color, color, border-color, translate; transition-duration: 0.25s, 0.25s, 0.25s, 0.45s; transition-timing-function: var(--ease-out); }
+  .btn, .menu-btn, .theme-btn, .chip-link, .brand__mark { transition-property: background-color, color, border-color, translate; transition-duration: 0.25s, 0.25s, 0.25s, 0.45s; transition-timing-function: var(--ease-out); }
 
   /* ═════════ Mouvement (uniquement sans « réduire les animations ») ═════════ */
   @media (prefers-reduced-motion: no-preference) {
@@ -314,69 +311,6 @@
       .band__row       { animation: band-x linear both; animation-timeline: view(); }
       .band__row--rev  { animation-name: band-x-rev; }
 
-      /* Rail horizontal : le défilement vertical fait glisser les cartes de côté, en CSS pur */
-      @container page (width >= 48rem) {
-        .rail {
-          grid-column: full;
-          block-size: calc(100svh + var(--n, 6) * 40svh);
-          view-timeline: --rail block;
-        }
-        .rail__sticky {
-          container-type: inline-size;
-          position: sticky;
-          inset-block-start: var(--topbar-h);
-          block-size: calc(100svh - var(--topbar-h));
-          display: grid;
-          align-content: center;
-          gap: 1.25rem;
-          overflow: hidden;
-        }
-        .rail .projects {
-          display: flex;
-          inline-size: max-content;
-          gap: var(--gap);
-          padding-inline: var(--gutter);
-          animation: rail-x linear both;
-          animation-timeline: --rail;
-          animation-range: contain 0% contain 100%;
-        }
-        .rail .project {
-          flex: none;
-          grid-row: auto;
-          grid-template-rows: auto auto auto 1fr auto auto;
-          inline-size: clamp(20rem, 31cqi, 27rem);
-          margin: 0;
-          animation: none;
-        }
-        .rail .project img { max-block-size: 30svh; }
-        .rail__hint {
-          display: block;
-          padding-inline: var(--gutter);
-          font-family: var(--f-mono);
-          font-size: var(--fs-xs);
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: var(--c-mist);
-        }
-        .rail__hint span { display: inline-block; color: var(--c-neon); animation: nudge 1.6s ease-in-out infinite; }
-        .rail__hint b { font-weight: 400; color: var(--c-paper); }
-        .rail__meter {
-          display: block;
-          margin-inline: var(--gutter);
-          block-size: 2px;
-          background: var(--line-soft);
-        }
-        .rail__meter i {
-          display: block;
-          block-size: 100%;
-          background: linear-gradient(90deg, var(--c-tide), var(--c-neon));
-          transform-origin: 0 50%;
-          scale: 0 1;
-          animation: meter linear both;
-          animation-timeline: --rail;
-          animation-range: contain 0% contain 100%;
-        }
-      }
     }
   }
 
@@ -409,8 +343,6 @@
   @keyframes radar-grow { from { scale: 0; opacity: 0; rotate: -40deg; } }
   @keyframes band-x     { from { translate: 0 0; } to { translate: -22% 0; } }
   @keyframes band-x-rev { from { translate: -22% 0; } to { translate: 0 0; } }
-  @keyframes rail-x     { to { translate: min(0px, 100cqi - 100%) 0; } }
-  @keyframes nudge      { 50% { translate: 0.4em 0; } }
 
   @media print {
     .ocean, .grain, .boot, .band, .cursor, .radar { display: none !important; }

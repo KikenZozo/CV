@@ -121,6 +121,16 @@
     color: var(--c-paper);
     background: linear-gradient(170deg, var(--c-deep), var(--c-ink));
   }
+  .photo {
+    justify-self: center;
+    inline-size: min(100%, 8.5rem);
+    block-size: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--c-paper);
+    box-shadow: 0 0 0 2px var(--c-neon), 0 0 24px color-mix(in oklch, var(--c-neon) 45%, transparent);
+  }
   .side a { color: var(--c-neon); overflow-wrap: anywhere; }
   .side h2 {
     font-family: var(--f-display);

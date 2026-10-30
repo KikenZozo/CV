@@ -237,6 +237,9 @@
       [full-end];
     column-gap: var(--gap);
   }
+  /* Les bandeaux et la frise débordent volontairement : on les coupe ici plutôt que de compter
+     sur overflow du body, que Safari iOS ignore parfois (défilement horizontal parasite) */
+  main { overflow-x: clip; }
   main:focus { outline: none; }
 
   main > * { grid-column: full; }
@@ -1281,6 +1284,18 @@
   }
   .block h3 { font-style: italic; text-transform: uppercase; font-size: var(--fs-xl); }
 
+  /* Cartes d'expérience : réutilisent .block, avec date et employeur */
+  .xp .block__num { font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem); }
+  .xp__when {
+    font-family: var(--f-mono);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-neon);
+  }
+  .xp__org { font-weight: 600; color: var(--c-paper); }
+  .xp--featured { border-color: color-mix(in oklch, var(--c-neon) 45%, transparent); }
+
   .cert-list { display: grid; }
   .cert-list li {
     display: flex;
@@ -1305,83 +1320,6 @@
   }
   .badge--live { background: var(--c-signal); }
   .badge--prep { background: transparent; color: var(--c-neon); box-shadow: inset 0 0 0 1px var(--c-neon); }
-
-  /* ── Projets ── */
-  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .filter {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.55rem 1.1rem;
-    font-family: var(--f-display);
-    font-style: italic;
-    font-weight: 700;
-    font-size: var(--fs-lg);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--c-paper);
-    border: 1px solid var(--glass-line);
-    transform: skewX(var(--skew));
-    transition: background-color 0.25s, color 0.25s, border-color 0.25s;
-  }
-  .filter span { font-family: var(--f-mono); font-style: normal; font-size: var(--fs-xs); color: var(--c-neon); }
-  .filter:hover { border-color: var(--c-neon); }
-  .filter[aria-pressed="true"] { background: var(--c-paper); color: var(--c-ink); border-color: var(--c-paper); }
-  .filter[aria-pressed="true"] span { color: color-mix(in oklch, var(--c-ink) 78%, var(--c-neon)); }
-
-  .projects {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
-    gap: 1rem var(--gap);
-  }
-  /* subgrid sur 6 rangées : capture / catégorie / titre / texte / tags / téléchargement */
-  .project {
-    grid-row: span 6;
-    display: grid;
-    grid-template-rows: subgrid;
-    row-gap: 0.75rem;
-    padding: 0.75rem 0.75rem 1.25rem;
-    margin-block-end: 1rem;
-    clip-path: polygon(0 0, calc(100% - var(--cut)) 0, 100% var(--cut), 100% 100%, var(--cut) 100%, 0 calc(100% - var(--cut)));
-  }
-  .project::before {
-    content: "";
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inline-size: calc(var(--cut) * 1.6);
-    aspect-ratio: 1;
-    background: linear-gradient(225deg, var(--c-neon) 0 calc(var(--cut) * 0.7), transparent 0);
-    z-index: 1;
-  }
-  .project > :not(img) { margin-inline: 0.5rem; }
-  .project img {
-    inline-size: 100%;
-    aspect-ratio: 5 / 3;
-    object-fit: cover;
-    border: 1px solid var(--line-soft);
-    transition: scale 0.6s var(--ease-out);
-  }
-  .project:hover img { scale: 1.03; }
-  .project__cat {
-    font-family: var(--f-mono);
-    font-size: var(--fs-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--c-neon);
-  }
-  .project h3 { font-size: var(--fs-xl); font-style: italic; text-transform: uppercase; }
-  .project__desc { font-size: var(--fs-sm); }
-  .project__dl {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding-block-start: 0.75rem;
-    border-block-start: 1px solid var(--line-soft);
-  }
-  .project__meta { font-family: var(--f-mono); font-size: var(--fs-xs); color: var(--c-mist); }
 
   /* ── Objectif ── */
   .manifesto p {
@@ -1553,16 +1491,12 @@
     /* ── Flottement « sous la surface » ──
        Chaque conteneur fait tourner --phase ; les enfants dérivent en sinusoïde, chacun avec son décalage.
        Résultat : une houle lente et désynchronisée, sans une seule ligne de JS. */
-    .hero, .profile, .blocks, .projects, .menu__list { animation: phase 14s linear infinite; }
-    .projects { animation-duration: 18s; }
+    .hero, .profile, .blocks, .menu__list { animation: phase 14s linear infinite; }
     .tilt { --bob: calc(sin(var(--phase) + var(--off, 0deg)) * var(--amp, 6px)); }
     .hero__console { --off: 200deg; --amp: 9px; }
     .idcard { --off: 110deg; }
-    :is(.block, .project):nth-child(2) { --off: 70deg; }
-    :is(.block, .project):nth-child(3) { --off: 140deg; }
-    .project:nth-child(4) { --off: 210deg; }
-    .project:nth-child(5) { --off: 280deg; }
-    .project:nth-child(6) { --off: 330deg; }
+    .block:nth-child(2) { --off: 70deg; }
+    .block:nth-child(3) { --off: 140deg; }
     .menu__list li { transform: translateY(calc(sin(var(--phase) + var(--i) * 48deg) * 5px)); }
 
     .ambient::before { animation: shafts 18s ease-in-out infinite alternate; }
@@ -1631,12 +1565,6 @@
         animation-range: cover 15% cover 65%;
       }
 
-      .project {
-        animation: card-in linear both;
-        animation-timeline: view();
-        animation-range: entry 0% cover 25%;
-      }
-
       .ink-reveal {
         color: transparent;
         background: linear-gradient(90deg, var(--c-paper) 0 50%, color-mix(in oklch, var(--c-paper) 16%, transparent) 50% 100%) 100% 0 / 200% 100%;
@@ -1671,7 +1599,6 @@
   @keyframes num-drift  { from { translate: 0 30%; } to { translate: 0 -30%; } }
   @keyframes fill       { from { clip-path: inset(0 100% 0 0); } }
   @keyframes grow-y     { from { scale: 1 0; } }
-  @keyframes card-in    { from { opacity: 0; translate: 0 4rem; rotate: x 18deg; } }
   @keyframes ink        { to { background-position: 0 0; } }
 
   /* ── View Transitions ──
@@ -1695,13 +1622,6 @@
   html[data-vt="jump"]::view-transition-old(root) { animation: 0.45s var(--ease-in-out) both vt-recede; }
   html[data-vt="jump"]::view-transition-new(root) { animation: 0.55s var(--ease-in-out) both vt-wipe-in; }
 
-  /* Filtrage des projets : chaque carte morphe vers sa nouvelle position */
-  html[data-vt="filter"] .project { view-transition-name: var(--vt); }
-  html[data-vt="filter"]::view-transition-old(root),
-  html[data-vt="filter"]::view-transition-new(root) { animation: none; }
-  html[data-vt="filter"]::view-transition-new(*):only-child { animation: 0.45s var(--ease-out) both vt-pop-in; }
-  html[data-vt="filter"]::view-transition-old(*):only-child { animation: 0.3s ease-in both vt-pop-out; }
-
   /* Changement de thème : la nouvelle palette s'ouvre en cercle depuis le bouton */
   html[data-vt="theme"]::view-transition-old(root) { animation: none; }
   html[data-vt="theme"]::view-transition-new(root) { animation: 0.9s var(--ease-out) both vt-circle; }
@@ -1722,8 +1642,6 @@
     from { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 0%)); }
     to   { clip-path: circle(150vmax at var(--vt-x, 50%) var(--vt-y, 0%)); }
   }
-  @keyframes vt-pop-in  { from { opacity: 0; scale: 0.85; } }
-  @keyframes vt-pop-out { to { opacity: 0; scale: 0.85; } }
 
   @media (prefers-reduced-motion: reduce) {
     ::view-transition-group(*),
@@ -1739,7 +1657,7 @@
 /* ─────────────────────────── UTILITIES / PRINT ─────────────────────────── */
 @layer utilities {
   @media print {
-    .topbar, .scroll-meter, .menu, .hero__console, .ambient, .hud, .hero__waves, .hero__slab, .filters, .form, .hero__scroll, .marquee__track { display: none !important; }
+    .topbar, .scroll-meter, .menu, .hero__console, .ambient, .hud, .hero__waves, .hero__slab, .form, .hero__scroll, .marquee__track { display: none !important; }
     body { background: #fff; color: #000; }
     body::before, body::after { display: none; }
     * { color: #000 !important; background: none !important; box-shadow: none !important; -webkit-text-stroke: 0 !important; }

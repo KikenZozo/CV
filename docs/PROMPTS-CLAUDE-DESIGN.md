@@ -64,19 +64,7 @@ contours, couleur néon aqua #4fe3f5 à 40 % d'opacité, quelques LED pleines en
 aucun logo. viewBox 0 0 600 900, SVG optimisé (< 25 Ko), sans filtre ni dégradé.
 ```
 
-## 5. Captures de projets harmonisées — `images/exe-1.webp` … `exe-6.webp`
-
-> Idéalement, utilise de **vraies captures** de tes outils (900×540). Sinon, pour harmoniser les maquettes :
-
-```
-[DA commune]
-Maquette d'une fenêtre d'application console Windows 900×540 px, cadre sombre #0b1628 aux coins légèrement
-arrondis, barre de titre avec le nom « NomOutil.exe » en monospace, puis 5 lignes de sortie de commande
-réalistes pour [décrire l'outil], une barre de progression néon aqua à 80 %. Lisible, propre, sans
-effet 3D. Exporte en WebP < 40 Ko.
-```
-
-## 6. Monogramme / favicon — `images/favicon.svg`
+## 5. Monogramme / favicon — `images/favicon.svg`
 
 Le monogramme « EB » actuel est généré en SVG. Pour une version dessinée :
 

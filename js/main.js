@@ -183,35 +183,6 @@ function tick() {
 tick();
 setInterval(tick, 15_000);
 
-/* ── Filtrage des projets (morphing par View Transition) ──── */
-const filters = document.querySelectorAll('[data-filter]');
-const projects = document.querySelectorAll('.project');
-const filterStatus = document.querySelector('[data-filter-status]');
-
-filters.forEach((button) => {
-  button.addEventListener('click', () => {
-    const cat = button.dataset.filter;
-    transition('filter', () => {
-      filters.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
-      let shown = 0;
-      projects.forEach((card) => {
-        const match = cat === 'all' || card.dataset.cat === cat;
-        card.hidden = !match;
-        if (match) shown += 1;
-      });
-      filterStatus.textContent = `${shown} projet${shown > 1 ? 's' : ''} affiché${shown > 1 ? 's' : ''}`;
-    });
-  });
-});
-
-/* Liens MEGA pas encore renseignés : on les neutralise proprement */
-document.querySelectorAll('a[href*="REMPLACER-PAR-VOTRE-LIEN"]').forEach((link) => {
-  link.removeAttribute('href');
-  link.setAttribute('aria-disabled', 'true');
-  link.setAttribute('role', 'link');
-  link.replaceChildren(link.querySelector('svg'), 'Lien bientôt disponible');
-});
-
 /* ── Inclinaison 3D au pointeur ───────────────────────────── */
 function bindTilt(card) {
   const max = 6;
